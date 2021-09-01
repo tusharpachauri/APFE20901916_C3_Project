@@ -75,4 +75,14 @@ public class Restaurant {
     public LocalTime getClosingTime() {
         return closingTime;
     }
+
+    public int getOrderValue(List<String> selectedItemsName){
+        int orderValue = 0;
+        for(Item item: menu){
+            if(selectedItemsName.contains(item.getName())){
+                orderValue += item.getPrice();
+            }
+        }
+        return orderValue;
+    }
 }

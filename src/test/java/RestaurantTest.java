@@ -2,11 +2,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class RestaurantTest {
     Restaurant restaurant;
+    List<Item> itemList = new ArrayList<>();
+
     @BeforeEach
     public void add_Restaurant_for_Testing() {
         LocalTime openingTime = LocalTime.parse("10:30:00");
@@ -16,10 +20,19 @@ class RestaurantTest {
         restaurant.addToMenu("Vegetable lasagne", 269);
     }
 
+    public List<String> get_item_names_list(List<Item> items){
+        List<String> itemNames = new ArrayList<>();
+        for(Item item : items){
+            itemNames.add(item.getName());
+        }
+        return itemNames;
+    }
+
     //>>>>>>>>>>>>>>>>>>>>>>>>>OPEN/CLOSED<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     //-------FOR THE 2 TESTS BELOW, YOU MAY USE THE CONCEPT OF MOCKING, IF YOU RUN INTO ANY TROUBLE
     @Test
     public void is_restaurant_open_should_return_true_if_time_is_between_opening_and_closing_time(){
+        restaurant.openingTime = LocalTime.now().minusMinutes(1);
         restaurant.closingTime = LocalTime.now().plusMinutes(1);
         assertTrue(restaurant.isRestaurantOpen());
     }
@@ -52,4 +65,27 @@ class RestaurantTest {
                 ()->restaurant.removeFromMenu("French fries"));
     }
     //<<<<<<<<<<<<<<<<<<<<<<<MENU>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    //<<<<<<<<<<<<<<<<<<<<<<<DISPLAY_ITEMS>>>>>>>>>>>>>>>>>>>
+
+    @Test
+    public void should_compare_values_of_items_added_in_menu() {
+        itemList = restaurant.getMenu();
+        List<String> itemNames = get_item_names_list(itemList);
+        int orderValue = restaurant.getOrderValue(itemNames);
+        assertEquals(orderValue, 388);
+    }
+
+    @Test
+    public void order_value_should_reduce_cumulative_total_when_an_item_removed() {
+        itemList = restaurant.getMenu();
+        List<String> itemNames =  get_item_names_list(itemList);
+        int initialOrderValue = restaurant.getOrderValue(itemNames);
+        int priceOfItemAtIndex1 = itemList.get(1).getPrice();
+        itemList.remove(1);
+        List<String> newItemNames = get_item_names_list(itemList);
+        assertEquals(initialOrderValue - priceOfItemAtIndex1, restaurant.getOrderValue(newItemNames));
+    }
+    //<<<<<<<<<<<<<<<<<<<<<<<DISPLAY_ITEMS>>>>>>>>>>>>>>>>>>>
+
 }
