@@ -86,6 +86,14 @@ class RestaurantTest {
         List<String> newItemNames = get_item_names_list(itemList);
         assertEquals(initialOrderValue - priceOfItemAtIndex1, restaurant.getOrderValue(newItemNames));
     }
+
+    @Test
+    public void should_pass_when_order_value_does_not_match() {
+        itemList = restaurant.getMenu();
+        List<String> itemNames = get_item_names_list(itemList);
+        int orderValue = restaurant.getOrderValue(itemNames);
+        assertNotEquals(orderValue, 400);
+    }
     //<<<<<<<<<<<<<<<<<<<<<<<DISPLAY_ITEMS>>>>>>>>>>>>>>>>>>>
 
 }
